@@ -1,3 +1,8 @@
+__author__ = "Mathias Pettersen"
+__copyright__ = "Copyright (C) 2021 Mathias Pettersen"
+__license__ = "Public Domain"
+__version__ = "1.0"
+
 import dns.resolver
 import dns.name
 import dns.query
@@ -13,16 +18,19 @@ and if they have DNSSEC enabled. It also shows information about
 the encryption methods of DNSSEC and its TTL value.
 
 """
-
+# Creates text file with TTL value of the domains
 ttl_value_txtfile = open("ttl_value_textfile.txt", "w")
 
+# Creates text file with a number corresponding to the cryptographic value used
 cryptographic_value_txtfile = open("cryptographic_value_textfile.txt", "w")
 
-# with open("C:/Users/mathias.pettersen/OneDrive/Noroff/Noroff/Year 3/FDP/pythonProject/scandinavia_high_ed.txt", "r") \
-with open("C:/Users/mathi/OneDrive/Noroff/Noroff/Year 3/FDP/pythonProject_current/Scandinavia/learning_platforms_scandinavia.txt", "r") \
+
+# CHANGE PATH TO YOUR PATH FILE (should be a domain name list)
+with open("C:/Users/mathi/OneDrive/Noroff/Noroff/Year 3/FDP/pythonProject_current/Scandinavia/scandinavia_high_ed.txt", "r") \
         as domain_name_file:
     headings = ["DOMAIN NAME", "TLD", "TTL", "DNSSEC Y/N", "DNSSEC ALG NO", "ALGORITHM"]
 
+    # Create the CSV document
     with open('scan1.csv', mode='w', newline='') as file:
         writer = csv.writer(file, quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(headings)
@@ -33,6 +41,8 @@ with open("C:/Users/mathi/OneDrive/Noroff/Noroff/Year 3/FDP/pythonProject_curren
 
             # answers = dns.resolver.resolve(contents, "MX", raise_on_no_answer=False)
 
+
+            # Getting information from the "SOA" (Start of Authority) record
             answers = dns.resolver.resolve(contents, "SOA", raise_on_no_answer=False)
 
             print(contents + "    " + str(answers.rrset.ttl))
@@ -43,62 +53,64 @@ with open("C:/Users/mathi/OneDrive/Noroff/Noroff/Year 3/FDP/pythonProject_curren
                 print(contents)
                 print("***********")
                 print("***********")
-                print("\nITERATION MX-------------------------------------------")
-                print(answer)
-                print("ITERATION MX---------\n")
+                print("\nMX -------------------------------------------")
+                print(answer) # Mail Exchange server
+                print("MX ---------\n")
 
             answers = dns.resolver.resolve(contents, "NS", raise_on_no_answer=False)
             for answer in answers:
                 if answer is not None:
-                    print("ITERATION NS-------------------------------------------")
-                    print(answer)
-                    print("ITERATION NS---------\n")
+                    print("NS -------------------------------------------")
+                    print(answer) # Name server
+                    print("NS ---------\n")
 
             answers = dns.resolver.resolve(contents, "A", raise_on_no_answer=False)
             for answer in answers:
-                print("ITERATION A-------------------------------------------")
-                print(answer)
-                print("ITERATION A---------\n")
+                print("A -------------------------------------------")
+                print(answer) # IPv4 address
+                print("A ---------\n")
 
             answers = dns.resolver.resolve(contents, "AAAA", raise_on_no_answer=False)
             for answer in answers:
-                print("ITERATION AAAA-------------------------------------------")
-                print(answer)
-                print("ITERATION AAAA---------\n")
+                print("AAAA -------------------------------------------")
+                print(answer) #IPv6 address
+                print("AAAA ---------\n")
 
             answers = dns.resolver.resolve(contents, "SOA", raise_on_no_answer=False)
             for answer in answers:
-                print("ITERATION SOA-------------------------------------------")
-                print(answer)
-                print("ITERATION SOA---------\n")
+                print("SOA -------------------------------------------")
+                print(answer) # Start of Authority record
+                print("SOA ---------\n")
 
             answers = dns.resolver.resolve(contents, "DNSKEY", raise_on_no_answer=False)
             for answer in answers:
                 # new_ans = answer
-                print("ITERATION DNSKEY-------------------------------------------")
-                print(answer)
-                print("ITERATION DNSKEY---------\n")
+                print("DNSKEY -------------------------------------------")
+                print(answer) # DNS key
+                print("DNSKEY ---------\n")
 
             if answers.rrset is not None:
-                print("RRSET-----------------------------------------------")
-                print(answers.rrset.ttl)
-                print("RRSET-------------\n")
+                print("RRSET -----------------------------------------------")
+                print(answers.rrset.ttl) # Resource Record set
+                print("RRSET -------------\n")
 
             if answers.rrset is not None:
-                print("RRSET NAME-----------------------------------------------")
-                print(answers.rrset.rdtype)
-                print("RRSET NAME-------------\n")
+                print("RRSET NAME -----------------------------------------------")
+                print(answers.rrset.rdtype) # Resource Record name
+                print("RRSET NAME -------------\n")
 
             # print("\nDNSSEC DNSSEC DNSSEC --------- DNSSEC DNSSEC DNSSEC")
 
-            """
 
-            Function below checks DNSSEC validation
-
-            """
 
 
             def get_dnssec(dns_resolver_dnssec, domain_name2):
+
+                """
+
+                Function checks DNSSEC validation
+
+                """
 
                 # Check the input and add missing . if needed
 
@@ -145,6 +157,7 @@ with open("C:/Users/mathi/OneDrive/Noroff/Noroff/Year 3/FDP/pythonProject_curren
 
                 # print("----------------------------------------------")
 
+                # Dictionary to map the numbers to algorithms
                 algorithms = {
                     "1": "RSAMD5",
                     "2": "DH",
@@ -165,8 +178,8 @@ with open("C:/Users/mathi/OneDrive/Noroff/Noroff/Year 3/FDP/pythonProject_curren
                     "254": "PRIVATEOID"
                 }
 
+                # If domain uses DNSSEC, run this
                 if answer:
-                    # print(domain_name2)
 
                     soa_record = dns.resolver.resolve(contents, "SOA", raise_on_no_answer=False)
 
@@ -193,6 +206,8 @@ with open("C:/Users/mathi/OneDrive/Noroff/Noroff/Year 3/FDP/pythonProject_curren
                     cryptographic_value_txtfile.write(str(algo[4:6].strip()) + "\n")
                     writer.writerow(input1)
 
+
+                # If domain does NOT use DNSSEC, run this:
                 else:
                     soa_record = dns.resolver.resolve(contents, "SOA", raise_on_no_answer=False)
                     ttl_value = str(soa_record.rrset.ttl)
@@ -221,7 +236,7 @@ with open("C:/Users/mathi/OneDrive/Noroff/Noroff/Year 3/FDP/pythonProject_curren
 
                 dns_resolver = dns.resolver.Resolver()
                 # set a default nameserver
-                dns_resolver.nameservers = ["8.8.8.8"]
+                dns_resolver.nameservers = ["8.8.8.8"] # Google server
                 dns_resolver.timeout = 1.0
                 dns_resolver.lifetime = 1.0
                 domain_name = contents
