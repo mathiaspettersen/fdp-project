@@ -31,7 +31,7 @@ with open("C:/Users/mathi/OneDrive/Noroff/Noroff/Year 3/FDP/pythonProject_curren
     headings = ["DOMAIN NAME", "TLD", "TTL", "DNSSEC Y/N", "DNSSEC ALG NO", "ALGORITHM"]
 
     # Create the CSV document
-    with open('scan1.csv', mode='w', newline='') as file:
+    with open('CSV_file.csv', mode='w', newline='') as file:
         writer = csv.writer(file, quotechar='"', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(headings)
 
